@@ -15,6 +15,13 @@ class CreateInvoicesTable extends Migration
     {
         Schema::create('invoices', function (Blueprint $table) {
             $table->id();
+
+            $table->string('codeInvoices')->unique();
+            $table->double('totalPay');
+            $table->double('relityPay');
+            $table->boolean('status')->default(false);
+            $table->boolean('is_done')->default(false);
+
             $table->timestamps();
         });
     }

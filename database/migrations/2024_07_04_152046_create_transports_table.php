@@ -16,7 +16,7 @@ class CreateTransportsTable extends Migration
         Schema::create('Transports', function (Blueprint $table) {
 
             $table->id();
-            $table->string('UnitCode');
+            $table->string('UnitCode')->unique();
             $table->string('Name');
             $table->double('price');
             $table->double('PerCentPrice');

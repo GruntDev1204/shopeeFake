@@ -41,7 +41,8 @@ class CateGoryController extends Controller
                 'UrlPhoto' => $request->UrlPhoto,
             ]);
 
-            return response()->json(['status' => 'Created New category successfully!']);
+            return response()->json(['status' => 'Created New category successfully!'] , 200);
+
         } catch (\Exception $e) {
             return response()->json(['status' => 'An error occurred', 'message' => $e->getMessage()], 500);
         }
@@ -108,12 +109,6 @@ class CateGoryController extends Controller
     public function destroy($id)
     {
         try {
-            $Login = Auth::guard('admins')->user();
-
-            if (!$Login) {
-                return response()->json(['status' => 'Admin not authenticated'], 401);
-            }
-
             $data = CateGory::find($id);
 
             if (!$data) {

@@ -62,8 +62,8 @@ class ProductController extends Controller
                    'name' => $request->name,
                    'price' => $request->price,
                    'promotionalPrice' => $request->promotionalPrice,
-                   'describle' => $request->describle,
-                   'DetailedDescrible' => $request->DetailedDescrible,
+                   'describe' => $request->describe,
+                   'DetailedDescribe' => $request->DetailedDescribe,
                    'codeProduct' => Str::uuid(),
                    'action' => $request->action,
 
@@ -117,25 +117,48 @@ class ProductController extends Controller
     public function findByCodeProduct($code)
     {
         try {
-            $dataProduct =  Product::where('codeProduct' , $code)->first() ?? null;
+            // Tìm sản phẩm theo codeProduct
+            $dataProduct = Product::where('codeProduct', $code)->first();
+
+            // Khởi tạo biến $dataCateGory là null
+            $dataCateGory = null;
+
+            // Nếu tìm thấy sản phẩm, tìm tên của CateGory tương ứng
+            if ($dataProduct) {
+                $dataCateGory = CateGory::where('id', $dataProduct->cateGoryKey)->value('name');
+            }
 
             return response()->json([
-               'dataProduct' => $dataProduct ?? 'Product not found!'
-            ] , 200);
+                'dataProduct' => $dataProduct ?? 'Product not found!',
+                'dataCateGory' => $dataCateGory ?? 'CateGory not found!',
+            ], 200);
+
+        } catch (\Exception $e) {
+            return response()->json(['status' => 'An error occurred', 'message' => $e->getMessage()], 500);
+        }
+    }
+
+    public function RatingProduct ($id , $newRating ){
+        try {
+
+            $data = Product::find($id);
+
+            $data->total_ratings += $newRating;
+            $data->rating_count += 1;
+            $data->Rate = $data->total_ratings / $data->rating_count;
+            $data->save();
+
+
+            return response()->json([
+                'status' => 'Rating Product successfully',
+                'average_rating' => $data->Rate
+            ], 200);
 
         } catch (\Exception $e) {
             return response()->json(['status' => 'An error occurred', 'message' => $e->getMessage()], 500);
         }
 
     }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Product  $product
-     * @return \Illuminate\Http\Response
-     */
     public function update(Request $request, Product $product)
     {
         //
@@ -147,8 +170,20 @@ class ProductController extends Controller
      * @param  \App\Models\Product  $product
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Product $product)
+    public function destroy($id)
     {
+        try {
+            $data = Product::find($id);
+            $data->delete();
+
+
+            return response()->json([
+                'status' => 'deleted Product successfully',
+            ], 200);
+
+        } catch (\Exception $e) {
+            return response()->json(['status' => 'An error occurred', 'message' => $e->getMessage()], 500);
+        }
 
     }
 }

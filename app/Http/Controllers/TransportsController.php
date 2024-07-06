@@ -98,7 +98,7 @@ class TransportsController extends Controller
             $data->save();
 
             return response()->json([
-                'status' => 'Rating updated successfully',
+                'status' => 'Rating transport successfully',
                 'average_rating' => $data->Rate
             ], 200);
         } catch (\Exception $e) {

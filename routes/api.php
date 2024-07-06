@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\CateGoryController;
 use App\Http\Controllers\ProductController;
+use App\Models\Transports;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -23,5 +24,15 @@ use Illuminate\Support\Facades\Route;
 
 
 
-Route::get('/', [ProductController::class, 'show']);
+Route::get('/{code}', [CateGoryController::class, 'destroy']);
+
+
+// Route::get('/test/{code}', function($codeTransport){
+//     $dataTransport = Transports::where('UnitCode', $codeTransport)
+//         ->select('price', 'PerCentPrice', 'Name')
+//         ->first();
+//         return response()->json([
+//             'data' =>$dataTransport
+//         ]);
+// });
 

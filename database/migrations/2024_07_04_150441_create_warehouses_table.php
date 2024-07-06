@@ -15,7 +15,7 @@ class CreateWarehousesTable extends Migration
     {
         Schema::create('Ware_houses', function (Blueprint $table) {
             $table->id();
-            $table->string('codeProduct')->unique();
+            $table->string('codeProduct');
             $table->unsignedInteger('QuanTity');
             $table->double('TotalPrice');
             $table->timestamps();

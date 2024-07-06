@@ -22,9 +22,29 @@ class CartsController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function create($codeProduct ,$codeCustomer , Request $request)
     {
-        //
+        try {
+
+            Carts::create([
+               'codeProduct' => $codeProduct,
+
+               'codeCustomer' => $codeCustomer,
+
+               'QuanitityOfProduct' => $request->QuanitityOfProduct,
+
+               'Price' => $request->Price,
+
+            ]);
+
+            return response()->json([
+                'status' => 'create Cart sucessFully!'
+            ], 200);
+
+
+        } catch (\Exception $e) {
+            return response()->json(['status' => 'An error occurred', 'message' => $e->getMessage()], 500);
+        }
     }
 
     /**
@@ -82,4 +102,7 @@ class CartsController extends Controller
     {
         //
     }
+
+
+
 }

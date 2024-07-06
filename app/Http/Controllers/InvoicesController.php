@@ -2,8 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Carts;
 use App\Models\Invoices;
+use App\Models\Product;
+use App\Models\Transports;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 
 class InvoicesController extends Controller
 {
@@ -22,9 +26,65 @@ class InvoicesController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function create($codeCustomer ,$codeTransport)
     {
-        //
+        try {
+
+            $dataCart = Carts::join('products', 'products.codeProduct', '=', 'carts.codeProduct')
+            ->select('products.name', 'products.price', 'products.promotionalPrice', 'products.UrlPhoto', 'products.Rate', 'carts.*')
+            ->where('carts.codeCustomer', $codeCustomer)
+            ->where('products.action', true)
+            ->get();
+
+            $dataTransport = Transports::where('UnitCode', $codeTransport)
+            ->select('price', 'PerCentPrice', 'Name')
+            ->first();
+
+            if ($dataCart->isEmpty()) {
+                return response()->json(['status' => 'Data not found'], 404);
+            }
+
+            // Kiểm tra sự tồn tại của dữ liệu vận chuyển
+            if (!$dataTransport) {
+                return response()->json(['status' => 'No suitable transport unit found'], 404);
+            }
+
+
+            $totalPrice = 0;
+            foreach ($dataCart as $item) {
+                $price = $item->price - $item->promotionalPrice;
+                $totalPrice += $price;
+            }
+            $transportPrice = $dataTransport->price * $dataTransport->PerCentPrice;
+
+            $PriceInvoices = $totalPrice + $transportPrice;
+            $RelityPriceInvoice = $totalPrice + $transportPrice;
+
+            $invoice =  Invoices::create([
+
+                'codeInvoices' =>Str::uuid(),
+                'totalPay' => $PriceInvoices,
+                'relityPay' => $RelityPriceInvoice,
+
+            ]);
+
+            // Cập nhật tất cả bản ghi trong $dataCart với codeInvoice mới
+            foreach ($dataCart as $item) {
+                $cartItem = Carts::find($item->id);
+                if ($cartItem) {
+                    $cartItem->update([
+                        'codeInvoice' => $invoice->codeInvoices,
+                    ]);
+                }
+                
+            }
+            return response()->json([
+                'status' => 'Invoice created updated successfully!',
+            ], 200);
+
+        } catch (\Exception  $e) {
+            return response()->json(['status' => 'An error occurred', 'message' => $e->getMessage()], 500);
+        }
     }
 
     /**

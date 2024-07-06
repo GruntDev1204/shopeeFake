@@ -17,9 +17,13 @@ class Product extends Model
         'name',
         'price',
         'promotionalPrice',
-        'describle',
-        'DetailedDescrible',
+        'describe',
+        'DetailedDescribe',
         'codeProduct',
+
+        'Rate',
+        'total_ratings',
+        'rating_count',
 
         'action',
     ];
