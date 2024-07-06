@@ -13,7 +13,7 @@ class Invoices extends Model
     protected $fillable = [
         'codeInvoices',
         'totalPay',
-        'relityPay',
+        'realityPay',
         'status',
         'is_done',
     ];

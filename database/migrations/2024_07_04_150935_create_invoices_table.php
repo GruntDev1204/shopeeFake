@@ -18,7 +18,7 @@ class CreateInvoicesTable extends Migration
 
             $table->string('codeInvoices')->unique();
             $table->double('totalPay');
-            $table->double('relityPay');
+            $table->double('realityPay');
             $table->boolean('status')->default(false);
             $table->boolean('is_done')->default(false);
 

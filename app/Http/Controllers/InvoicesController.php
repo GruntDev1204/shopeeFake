@@ -64,7 +64,7 @@ class InvoicesController extends Controller
 
                 'codeInvoices' =>Str::uuid(),
                 'totalPay' => $PriceInvoices,
-                'relityPay' => $RelityPriceInvoice,
+                'realityPay' => $RelityPriceInvoice,
 
             ]);
 
@@ -76,7 +76,7 @@ class InvoicesController extends Controller
                         'codeInvoice' => $invoice->codeInvoices,
                     ]);
                 }
-                
+
             }
             return response()->json([
                 'status' => 'Invoice created updated successfully!',
