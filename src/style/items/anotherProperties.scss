@@ -1,0 +1,38 @@
+@function SetLocation($location...) {
+    @return $location;
+}
+
+@mixin applyProperties($properties...) {
+    @each $property, $value in $properties {
+        #{$property}: #{$value};
+    }
+}
+
+@mixin centerRow {
+    @include applyProperties((display, flex), (justify-content, center), (align-items, center));
+}
+
+@mixin centerColumn {
+    @include centerRow();
+    @include applyProperties((flex-direction, column));
+}
+
+@mixin startRow {
+    @include applyProperties((display, flex), (justify-content, flex-start), (align-items, center));
+}
+
+@mixin endRow {
+    @include applyProperties((display, flex), (justify-content, flex-end), (align-items, center));
+}
+
+@mixin startColumn {
+    @include startRow();
+    flex-direction: column;
+}
+
+
+.container {
+    margin: 0 auto;
+    max-width: 1440px;
+    @include centerRow();
+}
